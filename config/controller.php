@@ -1,7 +1,7 @@
 <?php 
 function CourseLoad(){
 	$DB=DBCONN();
-	$stmt = $DB->prepare("SELECT * FROM `courses`");
+	$stmt = $DB->prepare("SELECT * FROM `courses` ORDER BY id DESC");
 	$stmt->execute();
 	$Result = $stmt->fetchAll();
 	foreach ($Result as $k) { ?>
@@ -49,7 +49,7 @@ function SingleCourseLoad($id){
 
 function ShowNotification(){
 	$DB=DBCONN();
-	$stmt = $DB->prepare("SELECT * FROM `notify` WHERE `sts` = 1");
+	$stmt = $DB->prepare("SELECT * FROM `notify` WHERE `sts` = 1 ORDER BY `id` DESC");
 	$stmt->execute();
 	$Result = $stmt->fetchAll();
 	foreach ($Result as $k) { 
@@ -98,7 +98,7 @@ function ShowBloodGroup(){
 }
 
 function Login(){
-		if ($_SESSION['logged'] == true) {
+		if (isset($_SESSION['logged']) && $_SESSION['logged'] == true) {
 
 				header('Location: home');
 			}
@@ -280,14 +280,14 @@ function AddTeacher(){
 }
 
 function AddStudent(){
-		if (isset($_GET['name']) && isset($_GET['id'])) {
-			$name = $_GET['name'];
-			$id = $_GET['id'];
-			$pass = $_GET['pass'];
-			$img = $_GET['imglink'];
-			$title = $_GET['title'];
-			$email = $_GET['email'];
-			$mobile = $_GET['mobile'];
+		if (isset($_GET['sname']) && isset($_GET['sid'])) {
+			$name = $_GET['sname'];
+			$id = $_GET['sid'];
+			$pass = $_GET['spass'];
+			$img = $_GET['simglink'];
+			$title = $_GET['stitle'];
+			$email = $_GET['semail'];
+			$mobile = $_GET['smobile'];
 			$DB=DBCONN();
 			$tstmt = $DB->prepare("INSERT INTO `students`(`fullname`, `sid`, `title`, `emailid`, `mobile`, `img`) VALUES (:name,:tid,:title,:email,:mobile,:img)");
 			$result = $tstmt->execute(array(
@@ -335,7 +335,7 @@ function AddStudent(){
 									<div class="input-group">
 										<div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
 										</div>
-										<input type="text" name="name" class="form-control" placeholder="Student Name" aria-label="Student Name">
+										<input type="text" name="sname" class="form-control" placeholder="Student Name" aria-label="Student Name">
 									</div>
 								</div>
 							</div>
@@ -345,7 +345,7 @@ function AddStudent(){
 									<div class="input-group">
 										<div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
 										</div>
-										<input type="text" name="id" class="form-control" placeholder="Student I'd" aria-label="Student I'd">
+										<input type="text" name="sid" class="form-control" placeholder="Student I'd" aria-label="Student I'd">
 									</div>
 								</div>
 							</div>
@@ -355,7 +355,7 @@ function AddStudent(){
 							<div class="input-group">
 								<div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
 								</div>
-								<input type="text" name="pass" class="form-control" placeholder="Password">
+								<input type="text" name="spass" class="form-control" placeholder="Password">
 							</div>
 						</div>
 						<div class="form-group">
@@ -363,7 +363,7 @@ function AddStudent(){
 							<div class="input-group">
 								<div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
 								</div>
-								<input type="text" name="imglink" class="form-control" placeholder="Image Url">
+								<input type="text" name="simglink" class="form-control" placeholder="Image Url">
 							</div>
 						</div>
 						<div class="form-group">
@@ -371,7 +371,7 @@ function AddStudent(){
 							<div class="input-group">
 								<div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
 								</div>
-								<input type="text" name="title" class="form-control" placeholder="Dept & Section">
+								<input type="text" name="stitle" class="form-control" placeholder="Dept & Section">
 							</div>
 						</div>
 						<div class="form-group">
@@ -379,7 +379,7 @@ function AddStudent(){
 							<div class="input-group">
 								<div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
 								</div>
-								<input type="email" name="email" class="form-control" placeholder="Email Address">
+								<input type="email" name="semail" class="form-control" placeholder="Email Address">
 							</div>
 						</div>
 						<div class="form-group">
@@ -387,7 +387,7 @@ function AddStudent(){
 							<div class="input-group">
 								<div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
 								</div>
-								<input type="text" name="mobile" class="form-control" placeholder="Mobile Number">
+								<input type="text" name="smobile" class="form-control" placeholder="Mobile Number">
 							</div>
 						</div>
 						<div class="form-group">
@@ -404,11 +404,11 @@ function AddStudent(){
 
 }
 function CreateNotify(){
-		if (isset($_GET['title'])) {
+		if (isset($_GET['ntitle'])) {
 			$DB=DBCONN();
 			$tstmt = $DB->prepare("INSERT INTO `notify`(`title`) VALUES (:name)");
 			$result = $tstmt->execute(array(
-					'name' => $_GET['title']
+					'name' => $_GET['ntitle']
 				)
 			);
 			if (!empty($result)) {
@@ -428,7 +428,7 @@ function CreateNotify(){
 				<form action="">
 					<div class="form-group">
 						<label>New Update for Students</label>
-						<textarea name="title" class="form-control" id="message" rows="6"></textarea>
+						<textarea name="ntitle" class="form-control" id="message" rows="6"></textarea>
 					</div>
 
 						<div class="col-md-6">
@@ -444,14 +444,14 @@ function CreateNotify(){
 }
 
 function AddCourse(){
-		if (isset($_GET['title'])) {
+		if (isset($_GET['ctitle'])) {
 			$DB=DBCONN();
 			$tstmt = $DB->prepare("INSERT INTO `courses`(`coursename`, `content`, `ytblink`, `img`) VALUES (:title,:message,:link,:imglink)");
 			$result = $tstmt->execute(array(
-					'link' => $_GET['link'],
-					'imglink' => $_GET['imglink'],
-					'title' => $_GET['title'],
-					'message' => $_GET['message']
+					'link' => $_GET['clink'],
+					'imglink' => $_GET['cimglink'],
+					'title' => $_GET['ctitle'],
+					'message' => $_GET['cmessage']
 				)
 			);
 			if (!empty($result)) {
@@ -477,7 +477,7 @@ function AddCourse(){
                         <div class="input-group">
                             <div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
                             </div>
-                            <input type="text" name="link" class="form-control" placeholder="Course URL">
+                            <input type="text" name="clink" class="form-control" placeholder="Course URL">
                         </div>
                     </div>
                     <div class="form-group">
@@ -485,7 +485,7 @@ function AddCourse(){
                         <div class="input-group">
                             <div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
                             </div>
-                            <input type="text" name="imglink" class="form-control" placeholder="Image URL">
+                            <input type="text" name="cimglink" class="form-control" placeholder="Image URL">
                         </div>
                     </div>
                     <div class="form-group">
@@ -493,12 +493,12 @@ function AddCourse(){
                         <div class="input-group">
                             <div class="input-group-prepend"> <span class="input-group-text"><i class="flaticon-tick"></i></span>
                             </div>
-                            <input type="text" name="title" class="form-control" placeholder="Course Title">
+                            <input type="text" name="ctitle" class="form-control" placeholder="Course Title">
                         </div>
                     </div>
                     <div class="form-group">
 						<label>Course Description</label>
-						<textarea name="message" class="form-control" id="message" rows="6"></textarea>
+						<textarea name="cmessage" class="form-control" id="message" rows="6"></textarea>
                     </div>
                     <div class="col">
                         <input type="submit" class="btn btn-primary btn-round" value="Add Course" />
